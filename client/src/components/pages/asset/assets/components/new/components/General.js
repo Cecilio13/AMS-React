@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import * as actions from '../../../../../../../actions/';
 
 const General = (props) => {
-  const onFinish = (values) => {
-    props.newAsset(values);
+  const onFinish = async (values) => {
+    await props.newAsset(values);
+    await props.getAssets();
     props.gotoTab('view');
-    props.getAssets();
   };
 
   return <AssetForm onFinish={onFinish} count={props.assetCount} />;
@@ -15,7 +15,7 @@ const General = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    assetCount: state.assets.assets.length,
+    assetCount: state.assets.assets?.length,
   };
 };
 

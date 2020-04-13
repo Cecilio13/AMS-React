@@ -1,33 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import {
-  PageHeader,
-  Typography,
-  Col,
-  Row,
-  Form,
-  Input,
-  Select,
-  Button,
-  Table,
-  Checkbox,
-} from 'antd';
+import React, { useEffect, useState, useRef } from 'react';
+import { PageHeader, Typography, Col, Row, Form, Input, Select, Button, Table } from 'antd';
 import Card from '../../../shared/Card';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
 import * as query from '../../../../queries';
 import { columns } from './components/columns';
+import ReactToPrint from 'react-to-print';
+import Excel from './components/excel';
+import Print from './components/print';
 
 const Audit = (props) => {
   const [location, setLocation] = useState('');
   const [assets, setAssets] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
-  const newColumns = [
-    {
-      title: '',
-      render: (row) => <Checkbox />,
-    },
-    ...columns,
-  ];
+  const printRef = useRef(null);
+  const [printing, setPrinting] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -53,6 +41,13 @@ const Audit = (props) => {
   const reset = () => {
     setAssets([]);
     form.resetFields();
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      //console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setSelectedRows(selectedRows);
+    },
   };
 
   useEffect(() => {
@@ -128,18 +123,37 @@ const Audit = (props) => {
         </Form>
       </Card>
       <Card title='Asset List'>
-        <Table
-          dataSource={assets}
-          columns={newColumns}
-          loading={assets ? false : true}
-          rowKey={(row) => row._id}
-          onRow={(row) => ({
-            onDoubleClick: () => {
-              console.log(row);
-            },
-          })}
-        />
+        <div ref={printRef}>
+          {printing ? (
+            <Table
+              dataSource={selectedRows}
+              columns={columns}
+              loading={selectedRows ? false : true}
+              rowKey={(row) => row._id}
+              pagination={false}
+            />
+          ) : (
+            <Table
+              dataSource={assets}
+              columns={columns}
+              loading={assets ? false : true}
+              rowKey={(row) => row._id}
+              rowSelection={{
+                type: 'checkbox',
+                ...rowSelection,
+              }}
+              onRow={(row) => ({
+                onClick: () => {
+                  console.log(row);
+                },
+              })}
+            />
+          )}
+        </div>
+        <Excel selectedRows={selectedRows} />
+        <Print printRef={printRef.current} setPrinting={setPrinting} />
       </Card>
+      <Card title='Asset Unassigned to this Location'></Card>
     </div>
   );
 };
