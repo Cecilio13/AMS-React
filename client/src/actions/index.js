@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-// assets (assets.js)
+// ================= REDUCER_NAME (REDUCER_FILENAME) ==================
+
+// ================= ASSET (hr_asset.js) ==================
 export const newAsset = (data) => async (dispatch) => {
   const asset = await axios.post('/api/assets', data);
   dispatch({ type: 'NEW_ASSET_ADDED', payload: asset.data });
@@ -30,7 +32,14 @@ export const checkOutAsset = (tag) => async (dispatch) => {
   dispatch({ type: 'ASSET_CHECKOUT', payload: asset.data });
 };
 
-// assets parent tabs navigation (tab_asset_parent.js)
+// ================= AUDIT (hr_audit.js) ==================
+
+export const saveAudit = (data) => async (dispatch) => {
+  const audit = await axios.put('/api/audit', data);
+  dispatch({ type: 'AUDIT_SAVE', payload: audit.data });
+};
+
+// ================= NAVIGATOR (tab_asset_parent.js) ==================
 export const gotoTab = (tab) => async (dispatch) => {
   dispatch({ type: 'GOTO_TAB', payload: tab });
 };

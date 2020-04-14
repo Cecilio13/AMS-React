@@ -13,6 +13,8 @@ const Audit = (props) => {
   const [location, setLocation] = useState('');
   const [assets, setAssets] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [auditNote, setAuditNote] = useState('');
+  const [auditName, setAuditName] = useState('');
 
   const printRef = useRef(null);
   const [printing, setPrinting] = useState(false);
@@ -50,6 +52,39 @@ const Audit = (props) => {
     },
   };
 
+  const saveAudit = () => {
+    let data = [];
+    assets.map((asset) => {
+      selectedRows.map((rows) => {
+        if (rows._id === asset._id) {
+          data.push({
+            ...rows,
+            audit_check: true,
+            audit_asset_tag: rows.asset_tag,
+            audit_date: Date.now(),
+            audit_location: rows.asset_location,
+            audit_site: rows.asset_site,
+            audit_note: auditNote,
+            audit_window_name: auditName,
+          });
+        } else {
+          data.push({
+            ...rows,
+            audit_asset_tag: rows.asset_tag,
+            audit_date: Date.now(),
+            audit_location: rows.asset_location,
+            audit_site: rows.asset_site,
+            audit_note: auditNote,
+            audit_window_name: auditName,
+          });
+        }
+      });
+    });
+
+    console.log(data);
+    //props.saveAudit()
+  };
+
   useEffect(() => {
     props.getAssets();
   }, []);
@@ -74,9 +109,10 @@ const Audit = (props) => {
                 <Form.Item label='Audit Window Name' name='audit_name'>
                   <Input
                     placeholder='e.g. Audit-Department_Name...'
+                    onChange={setAuditName}
                     addonAfter={
                       <Button type='link' onClick={reset}>
-                        Reset
+                        Fetch
                       </Button>
                     }
                   />
@@ -110,7 +146,7 @@ const Audit = (props) => {
                   <Input type='date' />
                 </Form.Item>
                 <Form.Item label='Note' name='asset_note'>
-                  <TextArea />
+                  <TextArea onChange={setAuditNote} />
                 </Form.Item>
               </Col>
               <Col md={24}>
@@ -152,6 +188,7 @@ const Audit = (props) => {
         </div>
         <Excel selectedRows={selectedRows} />
         <Print printRef={printRef.current} setPrinting={setPrinting} />
+        <Button onClick={saveAudit}>Save Audit</Button>
       </Card>
       <Card title='Asset Unassigned to this Location'></Card>
     </div>

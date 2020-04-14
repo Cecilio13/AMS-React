@@ -10,4 +10,9 @@ module.exports = (app) => {
     });
     res.send(assets);
   });
+
+  app.put('/api/audit', async (req, res) => {
+    console.log(req.body);
+    res.send(assets);
+  });
 };
