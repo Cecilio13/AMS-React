@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { PageHeader, Typography, Col, Row, Form, Input, Select, Button, Table } from 'antd';
+import {
+  PageHeader,
+  Typography,
+  Col,
+  Row,
+  Form,
+  Input,
+  Select,
+  Button,
+  Table,
+} from 'antd';
 import Card from '../../../shared/Card';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -13,6 +23,10 @@ const Audit = (props) => {
   const [location, setLocation] = useState('');
   const [assets, setAssets] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedExisting, setSelectedExisting] = useState([]);
+  const [auditNote, setAuditNote] = useState('');
+  const [auditName, setAuditName] = useState('');
 
   const printRef = useRef(null);
   const [printing, setPrinting] = useState(false);
@@ -30,7 +44,10 @@ const Audit = (props) => {
 
   const onFinish = async (values) => {
     const { asset_location, asset_site } = values;
-    const audit = await query.fetchAuditByLocationAndSite(asset_location, asset_site);
+    const audit = await query.fetchAuditByLocationAndSite(
+      asset_location,
+      asset_site
+    );
     setAssets(audit.data);
   };
 
@@ -39,20 +56,80 @@ const Audit = (props) => {
   };
 
   const reset = () => {
-    setAssets([]);
-    form.resetFields();
+    props.getExistingAudit(auditName);
+    //setAssets([]);
+    //form.resetFields();
   };
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       //console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       setSelectedRows(selectedRows);
+      setSelectedRowKeys(selectedRowKeys);
     },
+    [selectedExisting.length > 0 ? 'selectedRowKeys' : null]: selectedExisting,
+  };
+
+  const saveAudit = async (e) => {
+    const data = assets.map((asset) => {
+      if (selectedRowKeys.includes(asset._id)) {
+        return {
+          ...asset,
+          audit_check: true,
+          audit_asset: asset._id,
+          audit_date: Date.now(),
+          audit_location: asset.asset_location,
+          audit_site: asset.asset_site,
+          audit_note: auditNote,
+          audit_window_name: auditName,
+        };
+      } else {
+        return {
+          ...asset,
+          audit_asset: asset._id,
+          audit_date: Date.now(),
+          audit_location: asset.asset_location,
+          audit_site: asset.asset_site,
+          audit_note: auditNote,
+          audit_window_name: auditName,
+        };
+      }
+    });
+
+    await props.saveAudit(data);
+  };
+
+  const handleNote = (e) => {
+    setAuditNote(e.target.value);
+  };
+
+  const handleName = (e) => {
+    setAuditName(e.target.value);
   };
 
   useEffect(() => {
     props.getAssets();
-  }, []);
+    console.log('triggered');
+
+    if (props.exist) {
+      setSelectedExisting([]);
+      let existingAudit = [];
+      let selectedExist = [];
+      props.exist.map((audit) => {
+        setAuditName(audit.audit_window_name);
+        setAuditNote(audit.audit_note);
+        form.setFieldsValue({ asset_location: audit.audit_location });
+        form.setFieldsValue({ asset_site: audit.audit_site });
+        form.setFieldsValue({ asset_note: audit.audit_note });
+        if (audit.audit_check) {
+          selectedExist.push(audit.audit_asset._id);
+        }
+        existingAudit.push(audit.audit_asset);
+      });
+      setSelectedExisting(selectedExist);
+      setAssets(existingAudit);
+    }
+  }, [props.exist]);
 
   return (
     <div>
@@ -63,7 +140,6 @@ const Audit = (props) => {
           name='basic'
           {...layout}
           form={form}
-          //fields={selected}
           //initialValues={}
           onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
@@ -74,9 +150,10 @@ const Audit = (props) => {
                 <Form.Item label='Audit Window Name' name='audit_name'>
                   <Input
                     placeholder='e.g. Audit-Department_Name...'
+                    onChange={handleName}
                     addonAfter={
                       <Button type='link' onClick={reset}>
-                        Reset
+                        Fetch
                       </Button>
                     }
                   />
@@ -110,7 +187,7 @@ const Audit = (props) => {
                   <Input type='date' />
                 </Form.Item>
                 <Form.Item label='Note' name='asset_note'>
-                  <TextArea />
+                  <TextArea onChange={handleNote} />
                 </Form.Item>
               </Col>
               <Col md={24}>
@@ -152,6 +229,9 @@ const Audit = (props) => {
         </div>
         <Excel selectedRows={selectedRows} />
         <Print printRef={printRef.current} setPrinting={setPrinting} />
+        <Button htmlType='button' onClick={saveAudit}>
+          Save Audit
+        </Button>
       </Card>
       <Card title='Asset Unassigned to this Location'></Card>
     </div>
@@ -161,6 +241,8 @@ const Audit = (props) => {
 const mapStateToProps = (state) => {
   return {
     assets: state.assets?.assets,
+    exist: state.audits?.existAudit,
   };
 };
+
 export default connect(mapStateToProps, actions)(Audit);

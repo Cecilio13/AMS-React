@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const hr_audit = new Schema({
   audit_window_name: String,
-  audit_asset_tag: String,
+  audit_asset: { type: Schema.Types.ObjectId, ref: 'hr_assets' },
   audit_date: String,
   audit_location: String,
   audit_site: String,
   audit_note: String,
-  audit_check: String,
+  audit_check: Boolean,
   audit_action_date: String,
   audit_action: String,
   audit_move_employee: String,
@@ -25,9 +25,10 @@ const hr_audit = new Schema({
   audit_finish: String,
   notif_date: Date,
   created_at: Date,
-  updated_at: Date
+  updated_at: Date,
 });
-hr_audit.pre('save', function(next) {
+
+hr_audit.pre('save', function (next) {
   now = new Date();
   this.updated_at = now;
   if (!this.created_at) {
