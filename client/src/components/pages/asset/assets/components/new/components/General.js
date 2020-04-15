@@ -15,7 +15,7 @@ const General = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    assetCount: state.assets.assets?.length,
+    assetCount: state.assets?.assets?.length,
   };
 };
 

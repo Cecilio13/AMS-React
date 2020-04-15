@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const hr_audit = new Schema({
   audit_window_name: String,
-  audit_asset_tag: { type: Schema.Types.ObjectId, ref: 'hr_assets' },
+  audit_asset: { type: Schema.Types.ObjectId, ref: 'hr_assets' },
   audit_date: String,
   audit_location: String,
   audit_site: String,

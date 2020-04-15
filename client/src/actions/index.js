@@ -36,7 +36,14 @@ export const checkOutAsset = (tag) => async (dispatch) => {
 
 export const saveAudit = (data) => async (dispatch) => {
   const audit = await axios.put('/api/audit', data);
-  dispatch({ type: 'AUDIT_SAVE', payload: audit.data });
+  dispatch({ type: 'AUDIT_NEW', payload: audit.data });
+};
+
+export const getExistingAudit = (name) => async (dispatch) => {
+  const audit = await axios.post('/api/audit/existing', {
+    audit_window_name: name,
+  });
+  dispatch({ type: 'AUDIT_GET_EXISTING', payload: audit.data });
 };
 
 // ================= NAVIGATOR (tab_asset_parent.js) ==================

@@ -40,8 +40,7 @@ const AssetForm = (props) => {
       name='asset'
       fields={editValues}
       onFinish={props.onFinish}
-      scrollToFirstError
-    >
+      scrollToFirstError>
       <Card title='Asset Information'>
         <Row>
           <Col span={12}>
@@ -49,10 +48,7 @@ const AssetForm = (props) => {
               <Input disabled />
             </Form.Item>
             <Form.Item name='asset_description' label='Asset Description'>
-              <Select
-                placeholder='Select asset description'
-                onChange={handleChange}
-              >
+              <Select placeholder='Select asset description' onChange={handleChange}>
                 <Option value='Computer'>Computer</Option>
                 <Option value='Furniture'>Furniture</Option>
               </Select>
@@ -68,6 +64,8 @@ const AssetForm = (props) => {
             <Form.Item name='asset_sub_category' label='Sub Category'>
               <Select placeholder='Select sub-category'>
                 <Option value='asus'>Asus</Option>
+                <Option value='samsung'>Samsung</Option>
+                <Option value='xiaomi'>Xiaomi</Option>
               </Select>
             </Form.Item>
 
@@ -82,8 +80,7 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input brand.',
                 },
-              ]}
-            >
+              ]}>
               <Input />
             </Form.Item>
             <Form.Item name='asset_model' label='Model'>
@@ -97,8 +94,7 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input serial.',
                 },
-              ]}
-            >
+              ]}>
               <Input />
             </Form.Item>
             <Form.Item name='plate_number' label='Plate Number'>
@@ -122,8 +118,7 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input location.',
                 },
-              ]}
-            >
+              ]}>
               <Input />
             </Form.Item>
             <Form.Item
@@ -134,8 +129,7 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input site.',
                 },
-              ]}
-            >
+              ]}>
               <Input />
             </Form.Item>
             <Form.Item name='asset_department_code' label='Department'>
@@ -161,8 +155,7 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input vendor name.',
                 },
-              ]}
-            >
+              ]}>
               <Input />
             </Form.Item>
             <Form.Item name='purchase_order' label='Purchase Order'>
@@ -176,8 +169,7 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input invoice number.',
                 },
-              ]}
-            >
+              ]}>
               <Input />
             </Form.Item>
             <Form.Item
@@ -188,8 +180,7 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input purchase date.',
                 },
-              ]}
-            >
+              ]}>
               <Input type='date' />
             </Form.Item>
             <Form.Item
@@ -200,15 +191,12 @@ const AssetForm = (props) => {
                   required: true,
                   message: 'Please input purchase cost.',
                 },
-              ]}
-            >
+              ]}>
               <InputNumber
                 style={{ width: '100%' }}
                 placeholder='0.00'
                 step='0.00'
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               />
             </Form.Item>
             <Form.Item name='start_date' label='Start Date'>
@@ -225,9 +213,7 @@ const AssetForm = (props) => {
                 style={{ width: '100%' }}
                 placeholder='0.00'
                 step='0.00'
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 disabled
               />
             </Form.Item>
@@ -238,9 +224,7 @@ const AssetForm = (props) => {
                 style={{ width: '100%' }}
                 placeholder='0.00'
                 step='0.00'
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               />
             </Form.Item>
           </Col>
@@ -250,9 +234,7 @@ const AssetForm = (props) => {
                 style={{ width: '100%' }}
                 placeholder='0.00'
                 step='0.00'
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 disabled
               />
             </Form.Item>
@@ -260,10 +242,7 @@ const AssetForm = (props) => {
         </Row>
         <Row>
           <Col md={12}>
-            <Form.Item
-              name='depreciation_frequency'
-              label='Depreciation Frequency'
-            >
+            <Form.Item name='depreciation_frequency' label='Depreciation Frequency'>
               <Select placeholder='Select department'>
                 <Option value='yearly'>Yearly</Option>
                 <Option value='monthly'>Monthly</Option>
@@ -284,9 +263,7 @@ const AssetForm = (props) => {
                 style={{ width: '100%' }}
                 placeholder='0.00'
                 step='0.00'
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               />
             </Form.Item>
           </Col>
@@ -296,9 +273,7 @@ const AssetForm = (props) => {
                 style={{ width: '100%' }}
                 placeholder='0.00'
                 step='0.00'
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               />
             </Form.Item>
           </Col>
