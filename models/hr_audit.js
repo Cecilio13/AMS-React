@@ -15,7 +15,7 @@ const hr_audit = new Schema({
   audit_move_department: String,
   audit_action_note: String,
   audit_action_reason: String,
-  audit_status: String,
+  audit_status: Boolean,
   maintenanceduedate: String,
   auditor: String,
   transaction: String,

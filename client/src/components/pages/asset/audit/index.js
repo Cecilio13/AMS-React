@@ -1,15 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  PageHeader,
-  Typography,
-  Col,
-  Row,
-  Form,
-  Input,
-  Select,
-  Button,
-  Table,
-} from 'antd';
+import { PageHeader, Typography, Col, Row, Form, Input, Select, Button, Table } from 'antd';
 import Card from '../../../shared/Card';
 import { connect } from 'react-redux';
 import * as actions from '../../../../actions';
@@ -18,6 +8,7 @@ import { columns } from './components/columns';
 import ReactToPrint from 'react-to-print';
 import Excel from './components/excel';
 import Print from './components/print';
+import AuditDetail from './components/detail';
 
 const Audit = (props) => {
   const [location, setLocation] = useState('');
@@ -27,6 +18,7 @@ const Audit = (props) => {
   const [selectedExisting, setSelectedExisting] = useState([]);
   const [auditNote, setAuditNote] = useState('');
   const [auditName, setAuditName] = useState('');
+  const [processAudit, setProcessAudit] = useState(false);
 
   const printRef = useRef(null);
   const [printing, setPrinting] = useState(false);
@@ -44,10 +36,7 @@ const Audit = (props) => {
 
   const onFinish = async (values) => {
     const { asset_location, asset_site } = values;
-    const audit = await query.fetchAuditByLocationAndSite(
-      asset_location,
-      asset_site
-    );
+    const audit = await query.fetchAuditByLocationAndSite(asset_location, asset_site);
     setAssets(audit.data);
   };
 
@@ -107,10 +96,14 @@ const Audit = (props) => {
     setAuditName(e.target.value);
   };
 
+  const showProcessAudit = async () => {
+    await props.getExistingAudit(auditName);
+    setProcessAudit(true);
+  };
+
   useEffect(() => {
     props.getAssets();
     console.log('triggered');
-
     if (props.exist) {
       setSelectedExisting([]);
       let existingAudit = [];
@@ -131,7 +124,9 @@ const Audit = (props) => {
     }
   }, [props.exist]);
 
-  return (
+  return processAudit ? (
+    <AuditDetail audit={props.exist} />
+  ) : (
     <div>
       <PageHeader title='Audit' />
       <Card title='Filter asset to Audit'>
@@ -141,7 +136,7 @@ const Audit = (props) => {
           {...layout}
           form={form}
           //initialValues={}
-          onFinish={onFinish}
+          //onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
         >
           <Col md={24}>
@@ -233,7 +228,20 @@ const Audit = (props) => {
           Save Audit
         </Button>
       </Card>
-      <Card title='Asset Unassigned to this Location'></Card>
+      <Card title='Asset Unassigned to this Location'>
+        <Table
+          //dataSource={selectedRows}
+          columns={columns}
+          //loading={selectedRows ? false : true}
+          //rowKey={(row) => row._id}
+          pagination={false}
+        />
+        <div style={{ float: 'right' }}>
+          <Button htmlType='button' onClick={showProcessAudit}>
+            Process Audit
+          </Button>
+        </div>
+      </Card>
     </div>
   );
 };
