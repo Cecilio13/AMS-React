@@ -25,4 +25,32 @@ module.exports = (app) => {
     const audit = await Audit.find(req.body).populate('audit_asset');
     res.send(audit);
   });
+
+  app.patch('/api/audit', async (req, res) => {
+    const { _id } = req.body;
+    delete req.body._id;
+    const audit = await Audit.findByIdAndUpdate(
+      _id,
+      { ...req.body },
+      { useFindAndModify: false }
+    ).populate('audit_asset');
+    res.send(audit);
+  });
+
+  app.post('/api/audit/finish', async (req, res) => {
+    const assets = req.body;
+    let result = [];
+    for (x = 0; x < assets.length; x++) {
+      const temp = await Audit.findByIdAndUpdate(
+        assets[x]._id,
+        {
+          audit_status: true,
+        },
+        { useFindAndModify: false }
+      );
+
+      result.push(temp);
+    }
+    res.send(result);
+  });
 };

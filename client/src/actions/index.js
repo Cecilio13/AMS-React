@@ -46,6 +46,35 @@ export const getExistingAudit = (name) => async (dispatch) => {
   dispatch({ type: 'AUDIT_GET_EXISTING', payload: audit.data });
 };
 
+export const reconcileMoveAudit = (data) => async (dispatch) => {
+  const audit = await axios.patch('/api/audit', data);
+  console.log(audit.data);
+  dispatch({ type: 'AUDIT_RECONCILE_MOVE', payload: audit.data });
+};
+
+export const reconcileDisposeAudit = (data) => async (dispatch) => {
+  const audit = await axios.patch('/api/audit', data);
+  console.log(audit.data);
+  dispatch({ type: 'AUDIT_RECONCILE_DISPOSE', payload: audit.data });
+};
+
+export const reconcileMaintenanceAudit = (data) => async (dispatch) => {
+  const audit = await axios.patch('/api/audit', data);
+  console.log(audit.data);
+  dispatch({ type: 'AUDIT_RECONCILE_MAINTENANCE', payload: audit.data });
+};
+
+export const reconcileOtherAudit = (data) => async (dispatch) => {
+  const audit = await axios.patch('/api/audit', data);
+  console.log(audit.data);
+  dispatch({ type: 'AUDIT_RECONCILE_OTHER', payload: audit.data });
+};
+
+export const finishAudit = (data) => async (dispatch) => {
+  const audit = await axios.post('/api/audit/finish', data);
+  console.log(audit.data);
+  dispatch({ type: 'AUDIT_FINISH', payload: audit.data });
+};
 // ================= NAVIGATOR (tab_asset_parent.js) ==================
 export const gotoTab = (tab) => async (dispatch) => {
   dispatch({ type: 'GOTO_TAB', payload: tab });
