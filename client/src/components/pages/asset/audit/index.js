@@ -109,11 +109,13 @@ const Audit = (props) => {
       let existingAudit = [];
       let selectedExist = [];
       props.exist.map((audit) => {
+        console.log(audit);
         setAuditName(audit.audit_window_name);
         setAuditNote(audit.audit_note);
         form.setFieldsValue({ asset_location: audit.audit_location });
         form.setFieldsValue({ asset_site: audit.audit_site });
         form.setFieldsValue({ asset_note: audit.audit_note });
+        if (audit.audit_status) return;
         if (audit.audit_check) {
           selectedExist.push(audit.audit_asset._id);
         }
@@ -136,13 +138,21 @@ const Audit = (props) => {
           {...layout}
           form={form}
           //initialValues={}
-          //onFinish={onFinish}
+          onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
         >
           <Col md={24}>
             <Row>
               <Col md={12}>
-                <Form.Item label='Audit Window Name' name='audit_name'>
+                <Form.Item
+                  label='Audit Window Name'
+                  name='audit_name'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please Audit Name',
+                    },
+                  ]}>
                   <Input
                     placeholder='e.g. Audit-Department_Name...'
                     onChange={handleName}
@@ -153,7 +163,15 @@ const Audit = (props) => {
                     }
                   />
                 </Form.Item>
-                <Form.Item label='Location' name='asset_location'>
+                <Form.Item
+                  label='Location'
+                  name='asset_location'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input location.',
+                    },
+                  ]}>
                   <Select placeholder='Select' onChange={locationChanged}>
                     {props.assets?.map((asset, index) => {
                       return (
@@ -164,7 +182,15 @@ const Audit = (props) => {
                     })}
                   </Select>
                 </Form.Item>
-                <Form.Item label='Site' name='asset_site'>
+                <Form.Item
+                  label='Site'
+                  name='asset_site'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input site.',
+                    },
+                  ]}>
                   <Select placeholder='Select'>
                     {props.assets?.map((asset, index) => {
                       if (asset.asset_location !== location) return;
