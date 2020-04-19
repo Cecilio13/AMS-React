@@ -7,6 +7,7 @@ import * as actions from '../../../../../../actions';
 import { connect } from 'react-redux';
 
 const Detail = (props) => {
+  console.log(props.audit);
   const [found, setFound] = useState([]);
   const [notFound, setNotFound] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -23,10 +24,12 @@ const Detail = (props) => {
     const n = [];
     const u = [];
     props.audit.map((asset) => {
+      if (asset.audit_status) return;
       if (asset.audit_check) return;
       n.push(asset);
     });
     props.audit.map((asset) => {
+      if (asset.audit_status) return;
       if (!asset.audit_check) return;
       f.push(asset);
     });

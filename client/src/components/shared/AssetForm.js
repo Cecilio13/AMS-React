@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, InputNumber, Button, Select, Col, Row } from 'antd';
 import Card from './Card';
+import QRCode from 'qrcode';
 
 const AssetForm = (props) => {
   const [editValues, setEditValues] = useState([]);
+  const [qr, setQr] = useState('');
   const [form] = Form.useForm();
   const { Option } = Select;
   const layout = {
@@ -11,11 +13,23 @@ const AssetForm = (props) => {
     wrapperCol: { span: 16 },
   };
 
+  const generateQR = async (text) => {
+    try {
+      const qr = await QRCode.toDataURL(text);
+      setQr(qr);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     const RemapEdit = () => {
       let val = [];
       props.values &&
         Object.keys(props.values).map((keys) => {
+          if (keys === 'asset_tag') {
+            generateQR(props.values[keys]);
+          }
           return val.push({
             name: keys,
             value: props.values[keys],
@@ -27,10 +41,12 @@ const AssetForm = (props) => {
   }, [props]);
 
   const handleChange = (e) => {
+    setQr('');
     let tag = '';
     if (e === 'Furniture') tag = `FUR-000-${('00' + props.count).slice(-3)}`;
     if (e === 'Computer') tag = `COMP-000-${('00' + props.count).slice(-3)}`;
     form.setFieldsValue({ asset_tag: tag });
+    generateQR(tag);
   };
 
   return (
@@ -104,7 +120,19 @@ const AssetForm = (props) => {
               <Input />
             </Form.Item>
           </Col>
-          <Col span={12}></Col>
+          <Col span={12}>
+            <Row>
+              <Col md={8}></Col>
+              <Col md={8}>
+                <div style={{ textAlign: 'center' }}>
+                  <img src={qr} width='100%' height='auto' />
+                  <p>{form.getFieldValue('asset_tag')}</p>
+                  <Button style={{ width: '100%' }}>Print QR</Button>
+                </div>
+              </Col>
+            </Row>
+            <Col md={8}></Col>
+          </Col>
         </Row>
       </Card>
       <Card title='Asset Location'>
